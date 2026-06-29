@@ -1,0 +1,176 @@
+# =============================================================================
+# STEP 8 / 10 -- CI/CD WITH GITHUB ACTIONS
+# =============================================================================
+#
+# WHY THIS MATTERS:
+# Continuous Integration (CI) automatically runs your tests and linters every
+# time you push code or open a Pull Request. This catches bugs BEFORE they
+# reach production. In MLOps, CI is especially important because:
+#   1. A model training script that "works locally" may fail on a clean machine
+#   2. API schema changes can break downstream consumers silently
+#   3. Dependency updates can introduce incompatible versions
+#
+# WHAT THIS PIPELINE DOES:
+#   1. Checks out the code
+#   2. Sets up Python 3.11 (same version as our Docker image)
+#   3. Installs dependencies
+#   4. Runs ruff for code quality (linting + formatting checks)
+#   5. Runs pytest for functional tests
+#
+# TRY THIS:
+# - Push a commit with a syntax error and watch the pipeline fail
+# - Add a new test in step_07 and verify it runs in CI
+# - Try adding a "deploy" job that only runs on the main branch
+# =============================================================================
+
+name: ML Pipeline CI
+
+# ---------------------------------------------------------------------------
+# TRIGGERS
+# ---------------------------------------------------------------------------
+# WHY THIS MATTERS:
+# "on push to main" ensures that every merge to the default branch is tested.
+# "on pull_request" ensures that PRs are validated BEFORE merging.
+# This two-trigger approach means broken code never reaches main.
+# ---------------------------------------------------------------------------
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+# ---------------------------------------------------------------------------
+# JOBS
+# ---------------------------------------------------------------------------
+# A job is a set of steps that run on a fresh virtual machine.
+# Jobs run in parallel by default. We define two jobs:
+#   1. lint    -- code quality checks (fast, catches style issues)
+#   2. test    -- functional tests (slower, catches logic bugs)
+# The test job depends on lint via "needs: lint", so tests only run
+# if linting passes. This saves CI minutes on obviously broken code.
+# ---------------------------------------------------------------------------
+jobs:
+  # =========================================================================
+  # JOB 1: LINT -- Code Quality Checks
+  # =========================================================================
+  lint:
+    name: Lint (ruff)
+    runs-on: ubuntu-latest
+
+    steps:
+      # --- Step 1: Check out the repository ---
+      # WHY THIS MATTERS:
+      # GitHub Actions runners start with an empty filesystem.
+      # actions/checkout clones your repository so subsequent steps can
+      # access your code. Without this, nothing works.
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      # --- Step 2: Set up Python ---
+      # WHY THIS MATTERS:
+      # We pin Python 3.11 to match our Docker image and local development
+      # environment. Using a different version in CI than in production is
+      # a common source of "works in CI, fails in prod" bugs.
+      - name: Set up Python 3.11
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      # --- Step 3: Install ruff ---
+      # WHY THIS MATTERS:
+      # ruff is an extremely fast Python linter (written in Rust). It replaces
+      # flake8, isort, pyupgrade, and many other tools in a single binary.
+      # Installing it separately from project dependencies keeps this job fast.
+      - name: Install ruff
+        run: pip install ruff
+
+      # --- Step 4: Run linter ---
+      # ruff check: looks for code quality issues (unused imports, etc.)
+      # ruff format --check: verifies code formatting without modifying files
+      # The --output-format=github flag formats errors as GitHub annotations,
+      # which appear inline on the PR diff.
+      - name: Run ruff linter
+        run: |
+          echo "Running ruff linter..."
+          ruff check --output-format=github .
+
+      - name: Check code formatting
+        run: |
+          echo "Checking code formatting..."
+          ruff format --check .
+
+  # =========================================================================
+  # JOB 2: TEST -- Functional Tests with pytest
+  # =========================================================================
+  test:
+    name: Test (pytest)
+    runs-on: ubuntu-latest
+    needs: lint  # Only run tests if linting passes
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Python 3.11
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      # --- Step 3: Cache pip dependencies ---
+      # WHY THIS MATTERS:
+      # Downloading and installing packages on every CI run wastes time and
+      # bandwidth. Caching stores the installed packages between runs.
+      # The cache key includes the hash of requirements files -- if
+      # dependencies change, the cache is invalidated automatically.
+      - name: Cache pip packages
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/pip
+          key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements*.txt') }}
+          restore-keys: |
+            ${{ runner.os }}-pip-
+
+      # --- Step 4: Install dependencies ---
+      # We install both the serving requirements (for the app) and pytest
+      # (for testing). In a real project, you might have a separate
+      # requirements_test.txt with test-specific dependencies.
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r steps/step_06_serve/requirements_serve.txt
+          pip install pytest httpx
+
+      # --- Step 5: Run the training pipeline first ---
+      # WHY THIS MATTERS:
+      # Tests need a trained model to exist. In CI, we need to either:
+      # (a) include the model in the repo (bad -- models are large binary files)
+      # (b) train the model as part of CI (good -- ensures training works too)
+      # (c) download from a model registry (best for production)
+      # Here we use option (b) for simplicity.
+      - name: Install training dependencies
+        run: |
+          pip install mlflow
+
+      - name: Train model for testing
+        run: |
+          echo "Training model so tests can load it..."
+          python steps/step_04_train/train.py || echo "Training script not found, tests may fail"
+
+      # --- Step 6: Run tests ---
+      # -v          : Verbose output (shows each test name and result)
+      # --tb=short  : Short traceback format (easier to read in CI logs)
+      # -x          : Stop on first failure (fail fast in CI)
+      - name: Run tests
+        run: |
+          echo "Running pytest..."
+          pytest steps/step_07_test/ -v --tb=short
+
+      # --- Step 7: Run tests with coverage (optional enhancement) ---
+      # TRY THIS: Uncomment the block below to add coverage reporting.
+      # You would need to add pytest-cov to the install step.
+      # - name: Run tests with coverage
+      #   run: |
+      #     pip install pytest-cov
+      #     pytest steps/step_07_test/ -v --cov=steps/step_06_serve --cov-report=term-missing

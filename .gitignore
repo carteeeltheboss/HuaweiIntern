@@ -1,3 +1,192 @@
-venv312/
+# ============================================================
+# Comprehensive .gitignore for HuaweiIntern
+# ============================================================
+
+# ────────────────────────────────────────────────────────────
+#  OS-generated files
+# ────────────────────────────────────────────────────────────
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+
+# ────────────────────────────────────────────────────────────
+#  Python virtual environments (any name)
+# ────────────────────────────────────────────────────────────
+venv/
+venv*/
+.venv/
+env/
+.env/
+ENV/
+.python-version
+
+# ────────────────────────────────────────────────────────────
+#  Python bytecode / caches
+# ────────────────────────────────────────────────────────────
+__pycache__/
+*.py[cod]
+*$py.class
+*.pyo
+
+# ────────────────────────────────────────────────────────────
+#  Python packaging / distribution
+# ────────────────────────────────────────────────────────────
+*.egg
+*.egg-info/
+dist/
+build/
+eggs/
+*.whl
+*.manifest
+*.spec
+pip-log.txt
+pip-delete-this-directory.txt
+develop-eggs/
+.installed.cfg
+*.eggs/
+sdist/
+wheels/
+share/python-wheels/
+
+# ────────────────────────────────────────────────────────────
+#  MLflow
+# ────────────────────────────────────────────────────────────
 mlruns/
 mlflow.db
+mlartifacts/
+
+# ────────────────────────────────────────────────────────────
+#  LaTeX build artifacts (keep only .tex and .pdf everywhere)
+# ────────────────────────────────────────────────────────────
+*.aux
+*.bbl
+*.bcf
+*.blg
+*.fdb_latexmk
+*.fls
+*.lof
+*.log
+*.lot
+*.nav
+*.out
+*.run.xml
+*.snm
+*.synctex.gz
+*.synctex(busy)
+*.toc
+*.vrb
+*.xdv
+*.idx
+*.ilg
+*.ind
+*.glo
+*.gls
+*.glg
+*.ist
+*.acn
+*.acr
+*.alg
+*.maf
+*.mtc*
+*.nlo
+*.nls
+*.brf
+*.dvi
+*.ps
+*-blx.bib
+*.ptc
+*.thm
+_minted*/
+auto/
+
+# ────────────────────────────────────────────────────────────
+#  Jupyter Notebook
+# ────────────────────────────────────────────────────────────
+.ipynb_checkpoints/
+*/.ipynb_checkpoints/
+
+# ────────────────────────────────────────────────────────────
+#  IDE & Editor configs
+# ────────────────────────────────────────────────────────────
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.project
+.classpath
+.settings/
+*.sublime-project
+*.sublime-workspace
+.spyproject/
+.spyderproject
+
+# ────────────────────────────────────────────────────────────
+#  Data & model files (large binaries shouldn't be in git)
+# ────────────────────────────────────────────────────────────
+*.csv
+*.parquet
+*.h5
+*.hdf5
+*.pkl
+*.pickle
+*.joblib
+*.npy
+*.npz
+*.pt
+*.pth
+*.onnx
+*.pb
+*.tflite
+*.safetensors
+*.bin
+*.ckpt
+*.model
+*.tar.gz
+*.zip
+
+# ────────────────────────────────────────────────────────────
+#  DVC (handled by .dvc/.gitignore, but belt-and-suspenders)
+# ────────────────────────────────────────────────────────────
+.dvc/config.local
+.dvc/tmp/
+.dvc/cache/
+
+# ────────────────────────────────────────────────────────────
+#  Testing & coverage
+# ────────────────────────────────────────────────────────────
+htmlcov/
+.tox/
+.nox/
+.coverage
+.coverage.*
+.cache/
+nosetests.xml
+coverage.xml
+*.cover
+*.py,cover
+.hypothesis/
+.pytest_cache/
+
+# ────────────────────────────────────────────────────────────
+#  Misc / tool caches
+# ────────────────────────────────────────────────────────────
+.mypy_cache/
+.ruff_cache/
+.dmypy.json
+dmypy.json
+celerybeat-schedule
+*.sage.py
+.pdm.toml
+.pdm-python
+.pdm-build/
+*.bak
+*.tmp
+*.temp
+.gemini/

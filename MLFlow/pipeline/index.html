@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MLOps Pipeline — Wine Quality Classification</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <!-- Ambient background effects -->
+    <div class="ambient-bg">
+        <div class="ambient-orb ambient-orb-1"></div>
+        <div class="ambient-orb ambient-orb-2"></div>
+        <div class="ambient-orb ambient-orb-3"></div>
+    </div>
+
+    <div class="app-container">
+        <!-- Header -->
+        <header class="app-header">
+            <div class="header-content">
+                <div class="header-badge">MLOps Pipeline</div>
+                <h1 class="header-title">Wine Quality Classification</h1>
+                <p class="header-subtitle">
+                    An end-to-end machine learning operations pipeline — from raw data to production monitoring.
+                    <span class="header-meta">1599 samples / 11 features / Binary classification / RandomForest</span>
+                </p>
+            </div>
+        </header>
+
+        <!-- Progress bar -->
+        <div class="progress-container">
+            <div class="progress-track">
+                <div class="progress-fill" id="progressFill"></div>
+            </div>
+            <div class="progress-label" id="progressLabel">Stage 1 of 10</div>
+        </div>
+
+        <!-- Pipeline visualization -->
+        <div class="pipeline-section">
+            <div class="pipeline-scroll-wrapper">
+                <div class="pipeline-track" id="pipelineTrack">
+                    <!-- Connector lines rendered by JS -->
+                    <svg class="pipeline-connectors" id="pipelineConnectors" preserveAspectRatio="none"></svg>
+                    <!-- Retraining loop arrow -->
+                    <svg class="retraining-loop" id="retrainingLoop" preserveAspectRatio="none"></svg>
+                    <!-- Nodes rendered by JS -->
+                </div>
+            </div>
+            <div class="retraining-label" id="retrainingLabel">
+                <span class="retraining-icon">&#x21BB;</span> Retraining Loop
+            </div>
+        </div>
+
+        <!-- Stage detail panel -->
+        <main class="detail-section" id="detailSection">
+            <div class="detail-card" id="detailCard">
+                <!-- Stage header -->
+                <div class="detail-header" id="detailHeader">
+                    <div class="detail-stage-number" id="detailStageNumber">01</div>
+                    <div class="detail-title-group">
+                        <h2 class="detail-title" id="detailTitle">Data Collection</h2>
+                        <p class="detail-tagline" id="detailTagline"></p>
+                    </div>
+                </div>
+
+                <!-- Content grid -->
+                <div class="detail-grid" id="detailGrid">
+                    <!-- What happens here -->
+                    <div class="detail-block detail-block-what">
+                        <div class="block-header">
+                            <span class="block-icon icon-what">&#9670;</span>
+                            <h3>What Happens Here</h3>
+                        </div>
+                        <div class="block-body" id="blockWhat"></div>
+                    </div>
+
+                    <!-- Key concepts -->
+                    <div class="detail-block detail-block-concepts">
+                        <div class="block-header">
+                            <span class="block-icon icon-concepts">&#9671;</span>
+                            <h3>Key Concepts</h3>
+                        </div>
+                        <ul class="block-body concept-list" id="blockConcepts"></ul>
+                    </div>
+
+                    <!-- Tools used -->
+                    <div class="detail-block detail-block-tools">
+                        <div class="block-header">
+                            <span class="block-icon icon-tools">&#9881;</span>
+                            <h3>Tools Used</h3>
+                        </div>
+                        <div class="block-body tools-grid" id="blockTools"></div>
+                    </div>
+
+                    <!-- Code to run -->
+                    <div class="detail-block detail-block-code">
+                        <div class="block-header">
+                            <span class="block-icon icon-code">&gt;_</span>
+                            <h3>Code to Run</h3>
+                        </div>
+                        <div class="block-body" id="blockCode"></div>
+                    </div>
+
+                    <!-- Expected output -->
+                    <div class="detail-block detail-block-output">
+                        <div class="block-header">
+                            <span class="block-icon icon-output">&#9654;</span>
+                            <h3>Expected Output</h3>
+                        </div>
+                        <div class="block-body" id="blockOutput"></div>
+                    </div>
+
+                    <!-- Verification checklist -->
+                    <div class="detail-block detail-block-check">
+                        <div class="block-header">
+                            <span class="block-icon icon-check">&#10003;</span>
+                            <h3>Verification Checklist</h3>
+                        </div>
+                        <ul class="block-body checklist" id="blockCheck"></ul>
+                    </div>
+                </div>
+
+                <!-- Navigation -->
+                <div class="detail-nav">
+                    <button class="nav-btn nav-prev" id="btnPrev" aria-label="Previous stage">
+                        <span class="nav-arrow">&larr;</span> Previous
+                    </button>
+                    <div class="nav-dots" id="navDots"></div>
+                    <button class="nav-btn nav-next" id="btnNext" aria-label="Next stage">
+                        Next <span class="nav-arrow">&rarr;</span>
+                    </button>
+                </div>
+            </div>
+        </main>
+
+        <!-- Footer -->
+        <footer class="app-footer">
+            <p>MLOps Pipeline Visualization &mdash; Wine Quality Binary Classification</p>
+        </footer>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>

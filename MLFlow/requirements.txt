@@ -1,0 +1,45 @@
+# =============================================================================
+# MLOps Tutorial Pipeline -- Python Dependencies
+# =============================================================================
+#
+# Install all dependencies with:
+#   pip install -r requirements.txt
+#
+# It is strongly recommended to use a virtual environment:
+#   python -m venv venv
+#   source venv/bin/activate   (Linux/macOS)
+#   venv\Scripts\activate      (Windows)
+#   pip install -r requirements.txt
+#
+# These packages cover Steps 1 through 10 of the tutorial.
+# =============================================================================
+
+# --- Data handling and numerical computing ---
+pandas>=2.0.0
+numpy>=1.24.0
+
+# --- Machine learning ---
+scikit-learn>=1.3.0
+joblib>=1.3.0
+
+# --- Visualization ---
+matplotlib>=3.7.0
+seaborn>=0.12.0
+
+# --- Experiment tracking ---
+mlflow>=2.8.0
+
+# --- API serving (Steps 6-7) ---
+fastapi>=0.100.0
+uvicorn>=0.23.0
+pydantic>=2.0.0
+
+# --- HTTP client (data download and API testing) ---
+requests>=2.31.0
+
+# --- Testing (Step 8) ---
+pytest>=7.4.0
+httpx>=0.24.0
+
+# --- Monitoring (Step 9) ---
+prometheus-fastapi-instrumentator>=6.1.0
